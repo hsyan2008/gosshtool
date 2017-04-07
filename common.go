@@ -1,9 +1,10 @@
 package gosshtool
 
 import (
-	"golang.org/x/crypto/ssh"
 	"io"
 	"log"
+
+	"golang.org/x/crypto/ssh"
 )
 
 type PtyInfo struct {
@@ -29,14 +30,16 @@ type SSHClientConfig struct {
 
 func makeConfig(user string, password string, privateKey string) (config *ssh.ClientConfig) {
 
-	if password == "" && user == "" {
+	if password == "" && privateKey == "" {
 		log.Fatal("No password or private key available")
 	}
+	var hostKey ssh.PublicKey
 	config = &ssh.ClientConfig{
 		User: user,
 		Auth: []ssh.AuthMethod{
 			ssh.Password(password),
 		},
+		HostKeyCallback: ssh.FixedHostKey(hostKey),
 	}
 	if privateKey != "" {
 		signer, err := ssh.ParsePrivateKey([]byte(privateKey))
@@ -49,6 +52,7 @@ func makeConfig(user string, password string, privateKey string) (config *ssh.Cl
 			Auth: []ssh.AuthMethod{
 				clientkey,
 			},
+			HostKeyCallback: ssh.FixedHostKey(hostKey),
 		}
 	}
 	return
