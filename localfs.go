@@ -24,7 +24,7 @@ func (this *LocalForwardServer) createTunnel() {
 	if err != nil {
 		log.Fatal("Failed to dial: " + err.Error())
 	}
-	log.Println("create ssh client ok")
+	// log.Println("create ssh client ok")
 	this.tunnel = &Tunnel{conn}
 }
 
@@ -33,7 +33,7 @@ func (this *LocalForwardServer) handleConnectionAndForward(conn *net.Conn) {
 	if err != nil {
 		log.Fatalf("ssh client dial error:%v", err)
 	}
-	log.Println("create ssh connection ok")
+	// log.Println("create ssh connection ok")
 	go localReaderToRemoteWriter(*conn, sshConn)
 	go remoteReaderToLoacalWriter(sshConn, *conn)
 }
