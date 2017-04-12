@@ -33,13 +33,12 @@ func makeConfig(user string, password string, privateKey string) (config *ssh.Cl
 	if password == "" && privateKey == "" {
 		log.Fatal("No password or private key available")
 	}
-	var hostKey ssh.PublicKey
 	config = &ssh.ClientConfig{
 		User: user,
 		Auth: []ssh.AuthMethod{
 			ssh.Password(password),
 		},
-		HostKeyCallback: ssh.FixedHostKey(hostKey),
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 	if privateKey != "" {
 		signer, err := ssh.ParsePrivateKey([]byte(privateKey))
@@ -52,7 +51,7 @@ func makeConfig(user string, password string, privateKey string) (config *ssh.Cl
 			Auth: []ssh.AuthMethod{
 				clientkey,
 			},
-			HostKeyCallback: ssh.FixedHostKey(hostKey),
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		}
 	}
 	return
